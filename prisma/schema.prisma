@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  isAdmin      Boolean  @default(false)
+  lrigs        String   @default("")
+  achievements String   @default("")
+  bio          String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  entries       TournamentEntry[]
+  likesGiven    Like[]            @relation("LikesGiven")
+  likesReceived Like[]            @relation("LikesReceived")
+  memberships   TeamMember[]
+}
+
+model Tournament {
+  id            String   @id @default(cuid())
+  title         String
+  description   String   @default("")
+  location      String   @default("")
+  startsAt      DateTime
+  teamSizeLimit Int      @default(3)
+  isOpen        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  entries TournamentEntry[]
+  likes   Like[]
+  teams   Team[]
+}
+
+model TournamentEntry {
+  id           String   @id @default(cuid())
+  userId       String
+  tournamentId String
+  createdAt    DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tournamentId])
+  @@index([tournamentId])
+}
+
+model Like {
+  id           String   @id @default(cuid())
+  fromUserId   String
+  toUserId     String
+  tournamentId String
+  createdAt    DateTime @default(now())
+
+  fromUser   User       @relation("LikesGiven", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser     User       @relation("LikesReceived", fields: [toUserId], references: [id], onDelete: Cascade)
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId, tournamentId])
+  @@index([tournamentId, toUserId])
+}
+
+model Team {
+  id           String   @id @default(cuid())
+  tournamentId String
+  name         String
+  recruiting   Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tournament Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  members    TeamMember[]
+
+  @@index([tournamentId])
+}
+
+model TeamMember {
+  id           String   @id @default(cuid())
+  teamId       String
+  userId       String
+  tournamentId String
+  joinedAt     DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@unique([userId, tournamentId])
+  @@index([userId])
+  @@index([tournamentId])
+}
