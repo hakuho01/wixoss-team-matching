@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN "xAccount" TEXT NOT NULL DEFAULT '';

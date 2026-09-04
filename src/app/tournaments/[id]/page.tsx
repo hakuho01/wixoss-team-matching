@@ -5,6 +5,7 @@ import { ja } from "date-fns/locale";
 import { LikeButton } from "@/components/LikeButton";
 import { JoinLeaveButtons } from "@/components/JoinLeaveButtons";
 import { ActionForm } from "@/components/ActionForm";
+import { XAccountLink } from "@/components/XAccountLink";
 import { renameTeamAction } from "@/app/actions/tournaments";
 import { getSession } from "@/lib/auth";
 import { getMembershipForTournament, getRecommendations } from "@/lib/matching";
@@ -25,7 +26,7 @@ export default async function TournamentDetailPage({
       teams: {
         include: {
           members: {
-            include: { user: { select: { id: true, displayName: true, lrigs: true } } },
+            include: { user: { select: { id: true, displayName: true, lrigs: true, xAccount: true } } },
             orderBy: { joinedAt: "asc" },
           },
         },
@@ -90,6 +91,12 @@ export default async function TournamentDetailPage({
               <li key={m.id}>
                 {m.user.displayName}
                 {m.user.lrigs ? `（${m.user.lrigs}）` : ""}
+                {m.user.xAccount ? (
+                  <>
+                    {" · "}
+                    <XAccountLink handle={m.user.xAccount} className="text-[#7dd3c7] underline" />
+                  </>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -130,6 +137,11 @@ export default async function TournamentDetailPage({
                 >
                   <div>
                     <p className="font-medium text-white">{rec.user.displayName}</p>
+                    {rec.user.xAccount && (
+                      <p className="mt-1 text-sm">
+                        <XAccountLink handle={rec.user.xAccount} />
+                      </p>
+                    )}
                     <p className="mt-1 text-sm text-slate-300">
                       ルリグ: {rec.user.lrigs || "未設定"}
                     </p>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
+import { XAccountLink } from "@/components/XAccountLink";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -51,6 +52,12 @@ export default async function DashboardPage() {
         <div className="panel">
           <h2 className="text-lg font-medium text-white">あなたのプロフィール</h2>
           <dl className="mt-3 space-y-2 text-sm text-slate-300">
+            <div>
+              <dt className="text-slate-500">Xアカウント</dt>
+              <dd>
+                {user.xAccount ? <XAccountLink handle={user.xAccount} /> : "未設定"}
+              </dd>
+            </div>
             <div>
               <dt className="text-slate-500">使用ルリグ</dt>
               <dd>{user.lrigs || "未設定"}</dd>

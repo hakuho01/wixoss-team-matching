@@ -33,6 +33,23 @@ export default async function ProfilePage() {
             />
           </div>
           <div>
+            <label className="label" htmlFor="xAccount">
+              Xアカウント
+            </label>
+            <input
+              className="field"
+              id="xAccount"
+              name="xAccount"
+              defaultValue={user.xAccount}
+              placeholder="例: username または https://x.com/username"
+              maxLength={80}
+              autoComplete="off"
+            />
+            <p className="mt-1 text-xs text-slate-500">
+              @なしのユーザー名、またはプロフィールURLを入力できます（任意）
+            </p>
+          </div>
+          <div>
             <label className="label" htmlFor="lrigs">
               使用ルリグ（カンマ区切り）
             </label>

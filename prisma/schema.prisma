@@ -16,6 +16,7 @@ model User {
   lrigs        String   @default("")
   achievements String   @default("")
   bio          String   @default("")
+  xAccount     String   @default("")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

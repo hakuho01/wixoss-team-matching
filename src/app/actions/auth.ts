@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createSession, destroySession, requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { normalizeXHandle } from "@/lib/x-account";
 
 const credentialsSchema = z.object({
   email: z.string().email("メールアドレスの形式が正しくありません"),
@@ -102,14 +103,20 @@ export async function updateProfileAction(
     const lrigs = String(formData.get("lrigs") ?? "").trim();
     const achievements = String(formData.get("achievements") ?? "").trim();
     const bio = String(formData.get("bio") ?? "").trim();
+    const xRaw = String(formData.get("xAccount") ?? "").trim();
 
     if (!displayName) {
       return { error: "表示名を入力してください" };
     }
 
+    const { handle: xAccount, error: xError } = normalizeXHandle(xRaw);
+    if (xError) {
+      return { error: xError };
+    }
+
     await prisma.user.update({
       where: { id: user.id },
-      data: { displayName, lrigs, achievements, bio },
+      data: { displayName, lrigs, achievements, bio, xAccount },
     });
 
     return { success: "プロフィールを更新しました" };
