@@ -42,12 +42,19 @@ npm run dev
 2. **PostgreSQL** プラグインを追加（`DATABASE_URL` が自動注入されます）
 3. 変数を追加:
    - `SESSION_SECRET`（16文字以上のランダム文字列）
-   - 任意: `ADMIN_EMAIL` / `ADMIN_PASSWORD`（シード用）
-4. Deploy。`railway.toml` の build / start で migrate → 起動します
-5. 初回だけシードする場合:
+   - `ADMIN_EMAIL` / `ADMIN_PASSWORD`（起動時に管理者アカウントを自動作成・更新。パスワードは**8文字以上**）
+4. Deploy。`railway.toml` の start で migrate → 管理者同期 → 起動します
+
+管理者でログインできない場合の確認:
+
+- 変数名は正確に `ADMIN_EMAIL` / `ADMIN_PASSWORD`（大文字）
+- パスワードはログインフォームの制約で **8文字以上**
+- 再デプロイ後、ログに `[ensure-admin] 管理者を同期しました` が出ているか
+
+ローカルで管理者だけ作り直す場合:
 
 ```bash
-railway run npm run db:seed
+npm run db:ensure-admin
 ```
 
 ## 技術スタック

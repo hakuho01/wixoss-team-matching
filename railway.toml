@@ -6,6 +6,6 @@ builder = "NIXPACKS"
 buildCommand = "npx prisma generate && npm run build"
 
 [deploy]
-startCommand = "npx prisma migrate deploy && npm run start"
+startCommand = "npx prisma migrate deploy && node scripts/ensure-admin.mjs && npm run start"
 healthcheckPath = "/"
 restartPolicyType = "ON_FAILURE"
