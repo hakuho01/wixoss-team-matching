@@ -1,0 +1,5 @@
+[variables]
+NIXPACKS_NODE_VERSION = "20"
+# Ensure TypeScript / Tailwind / etc. are installed for `next build`
+NPM_CONFIG_PRODUCTION = "false"
+

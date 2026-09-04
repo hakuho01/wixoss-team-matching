@@ -1,9 +1,9 @@
 # Built for Railway: set DATABASE_URL from Postgres plugin and SESSION_SECRET.
 
-# Use the Nixpacks/Node builder. Start command is npm start after build.
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm ci && npx prisma generate && npm run build"
+# Nixpacks already installs dependencies; re-running npm ci causes EBUSY on node_modules.
+buildCommand = "npx prisma generate && npm run build"
 
 [deploy]
 startCommand = "npx prisma migrate deploy && npm run start"
